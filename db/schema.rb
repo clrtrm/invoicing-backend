@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_24_093208) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_24_160653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_24_093208) do
     t.datetime "updated_at", null: false
     t.string "zip_code", null: false
     t.index ["email"], name: "index_customers_on_email", unique: true
+  end
+
+  create_table "invoice_lines", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "invoice_id", null: false
+    t.string "label", null: false
+    t.integer "price", null: false
+    t.bigint "product_id", null: false
+    t.integer "quantity", null: false
+    t.string "unit", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "vat_rate", precision: 5, scale: 2, null: false
+    t.index ["invoice_id"], name: "index_invoice_lines_on_invoice_id"
+    t.index ["product_id"], name: "index_invoice_lines_on_product_id"
   end
 
   create_table "invoices", force: :cascade do |t|
@@ -68,5 +82,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_24_093208) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "invoice_lines", "invoices"
+  add_foreign_key "invoice_lines", "products"
   add_foreign_key "invoices", "customers"
 end
